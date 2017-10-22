@@ -4,6 +4,7 @@
             "target_name": "multihashing",
             "sources": [
                 "multihashing.cc",
+                "argon2.c",
                 "bcrypt.c",
                 "blake.c",
                 "boolberry.cc",
