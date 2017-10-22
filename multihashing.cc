@@ -49,22 +49,24 @@ extern "C" {
 using namespace node;
 using namespace v8;
 
-NAN_METHOD(neoscrypt) {
+NAN_METHOD(neoscrypt_hash) {
+    if (info.Length() < 2)
+        return THROW_ERROR_EXCEPTION("You must provide two arguments.");
 
-    if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
-
-    Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
+    Local<Object> target = info[0]->ToObject();
 
     if(!Buffer::HasInstance(target))
         return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
-    char *output = (char*) malloc(sizeof(char) * 32);
+    char output[32];
 
-    neoscrypt_hash(input, output);
+    uint32_t input_len = Buffer::Length(target);
 
-    info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
+    neoscrypt(input, output, 0);
+
+    v8::Local<v8::Value> returnValue = Nan::CopyBuffer(output, 32).ToLocalChecked();
+    info.GetReturnValue().Set(returnValue);
 }
 
 NAN_METHOD(bcrypt) {
@@ -577,7 +579,7 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("sha1").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(sha1)).ToLocalChecked());
     Nan::Set(target, Nan::New("x15").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(x15)).ToLocalChecked());
     Nan::Set(target, Nan::New("fresh").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(fresh)).ToLocalChecked());
-    Nan::Set(target, Nan::New("neoscrypt").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(neoscrypt)).ToLocalChecked());
+    Nan::Set(target, Nan::New("neoscrypt").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(neoscrypt_hash)).ToLocalChecked());
 }
 
 NODE_MODULE(multihashing, init)
