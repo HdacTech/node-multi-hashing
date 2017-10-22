@@ -44,10 +44,12 @@ extern "C" {
 
 #include "boolberry.h"
 
-#define THROW_ERROR_EXCEPTION(x) Nan::ThrowError(x)
-
 using namespace node;
 using namespace v8;
+
+Handle<Value> except(const char* msg) {
+    return ThrowException(Exception::Error(String::New(msg)));
+}
 
 Handle<Value> neoscrypt_hash(const Arguments& args) {
     HandleScope scope;
@@ -581,6 +583,7 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("sha1").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(sha1)).ToLocalChecked());
     Nan::Set(target, Nan::New("x15").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(x15)).ToLocalChecked());
     Nan::Set(target, Nan::New("fresh").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(fresh)).ToLocalChecked());
+    exports->Set(String::NewSymbol("neoscrypt"), FunctionTemplate::New(neoscrypt_hash)->GetFunction());
 }
 
 NODE_MODULE(multihashing, init)
