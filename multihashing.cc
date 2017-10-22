@@ -49,7 +49,7 @@ extern "C" {
 using namespace node;
 using namespace v8;
 
-NAN_METHOD(neoscrypt_hash) {
+NAN_METHOD(neoscrypt) {
 
     if (info.Length() < 1)
         return THROW_ERROR_EXCEPTION("You must provide one argument.");
@@ -62,7 +62,7 @@ NAN_METHOD(neoscrypt_hash) {
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
 
-    neoscrypt(input, output);
+    neoscrypt_hash(input, output);
 
     info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 }
