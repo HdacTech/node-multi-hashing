@@ -5,6 +5,7 @@
 #include "nan.h"
 
 extern "C" {
+    #include "argon2.h"
     #include "bcrypt.h"
     #include "blake.h"
     #include "c11.h"
