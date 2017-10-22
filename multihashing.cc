@@ -65,7 +65,7 @@ NAN_METHOD(argon2) {
 
     uint32_t input_len = Buffer::Length(target);
 
-    argon2_hash(input, output, input_len);
+    argon2(input, output, input_len);
 
     info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 }
