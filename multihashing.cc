@@ -44,33 +44,27 @@ extern "C" {
 
 #include "boolberry.h"
 
+#define THROW_ERROR_EXCEPTION(x) Nan::ThrowError(x)
+
 using namespace node;
 using namespace v8;
 
-Handle<Value> except(const char* msg) {
-    return ThrowException(Exception::Error(String::New(msg)));
-}
+NAN_METHOD(neoscrypt) {
 
-Handle<Value> neoscrypt_hash(const Arguments& args) {
-    HandleScope scope;
+    if (info.Length() < 1)
+        return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
-    if (args.Length() < 2)
-        return except("You must provide two arguments.");
-
-    Local<Object> target = args[0]->ToObject();
+    Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return except("Argument should be a buffer object.");
+        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
-    char output[32];
+    char *output = (char*) malloc(sizeof(char) * 32);
 
-    uint32_t input_len = Buffer::Length(target);
+    neoscrypt_hash(input, output);
 
-    neoscrypt(input, output, 0);
-
-    Buffer* buff = Buffer::New(output, 32);
-    return scope.Close(buff->handle_);
+    info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 }
 
 NAN_METHOD(bcrypt) {
@@ -583,7 +577,7 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("sha1").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(sha1)).ToLocalChecked());
     Nan::Set(target, Nan::New("x15").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(x15)).ToLocalChecked());
     Nan::Set(target, Nan::New("fresh").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(fresh)).ToLocalChecked());
-    exports->Set(String::NewSymbol("neoscrypt"), FunctionTemplate::New(neoscrypt_hash)->GetFunction());
+    Nan::Set(target, Nan::New("neoscrypt").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(fresh)).ToLocalChecked());
 }
 
 NODE_MODULE(multihashing, init)
