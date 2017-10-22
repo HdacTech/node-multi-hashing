@@ -3,8 +3,7 @@
     "version": "0.0.9",
     "main": "multihashing",
     "author": {
-        "name": "Matthew Little",
-        "email": "zone117x@gmail.com"
+        "name": "Matthew Little"
     },
     "repository": {
         "type": "git",
