@@ -50,7 +50,6 @@
                 "sha3/sph_shabal.c",
                 "sha3/hamsi.c",
                 "whirlpoolx.c",
-                "x5.c",
                 "x11.c",
                 "x11ghost.c",
                 "x13.c",
