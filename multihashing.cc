@@ -62,7 +62,7 @@ NAN_METHOD(neoscrypt) {
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
 
-    neoscrypt(input, output);
+    neoscrypt(input, output, 0);
 
     info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 }
