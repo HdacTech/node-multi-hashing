@@ -44,20 +44,22 @@ extern "C" {
 
 #include "boolberry.h"
 
-#define THROW_ERROR_EXCEPTION(x) Nan::ThrowError(x)
-
 using namespace node;
 using namespace v8;
+
+Handle<Value> except(const char* msg) {
+    return ThrowException(Exception::Error(String::New(msg)));
+}
 
 NAN_METHOD(neoscrypt_hash) {
 
     if (info.Length() < 2)
-        return THROW_ERROR_EXCEPTION("You must provide two arguments.");
+        return except("You must provide two arguments.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char output[32];
@@ -72,12 +74,12 @@ NAN_METHOD(neoscrypt_hash) {
 NAN_METHOD(bcrypt) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -90,12 +92,12 @@ NAN_METHOD(bcrypt) {
 NAN_METHOD(blake) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -110,23 +112,23 @@ NAN_METHOD(blake) {
 NAN_METHOD(boolberry) {
 
     if (info.Length() < 2)
-        return THROW_ERROR_EXCEPTION("You must provide two arguments.");
+        return except("You must provide two arguments.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
     Local<Object> target_spad = Nan::To<Object>(info[1]).ToLocalChecked();
     uint32_t height = 1;
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument 1 should be a buffer object.");
+        return except("Argument 1 should be a buffer object.");
 
     if(!Buffer::HasInstance(target_spad))
-        return THROW_ERROR_EXCEPTION("Argument 2 should be a buffer object.");
+        return except("Argument 2 should be a buffer object.");
 
     if(info.Length() >= 3) {
         if(info[2]->IsUint32()) {
             height = info[2]->ToUint32()->Uint32Value(); // TODO: This does not like Nan::To<uint32_t>(), the current way is deprecated
         } else {
-            return THROW_ERROR_EXCEPTION("Argument 3 should be an unsigned integer.");
+            return except("Argument 3 should be an unsigned integer.");
         }
     }
 
@@ -145,12 +147,12 @@ NAN_METHOD(boolberry) {
 NAN_METHOD(quark) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -165,12 +167,12 @@ NAN_METHOD(quark) {
 NAN_METHOD(x11) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -185,12 +187,12 @@ NAN_METHOD(x11) {
 NAN_METHOD(scrypt) {
 
    if (info.Length() < 3)
-       return THROW_ERROR_EXCEPTION("You must provide buffer to hash, N value, and R value");
+       return except("You must provide buffer to hash, N value, and R value");
 
    Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
    if(!Buffer::HasInstance(target))
-       return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+       return except("Argument should be a buffer object.");
 
    Local<Number> numn = Nan::To<Number>(info[1]).ToLocalChecked();
    unsigned int nValue = numn->Value();
@@ -210,12 +212,12 @@ NAN_METHOD(scrypt) {
 NAN_METHOD(scryptn) {
 
    if (info.Length() < 2)
-       return THROW_ERROR_EXCEPTION("You must provide buffer to hash and N factor.");
+       return except("You must provide buffer to hash and N factor.");
 
    Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
    if(!Buffer::HasInstance(target))
-       return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+       return except("Argument should be a buffer object.");
 
    Local<Number> num = Nan::To<Number>(info[1]).ToLocalChecked();
    unsigned int nFactor = num->Value();
@@ -236,12 +238,12 @@ NAN_METHOD(scryptn) {
 NAN_METHOD(scryptjane) {
 
     if (info.Length() < 5)
-        return THROW_ERROR_EXCEPTION("You must provide two argument: buffer, timestamp as number, and nChainStarTime as number, nMin, and nMax");
+        return except("You must provide two argument: buffer, timestamp as number, and nChainStarTime as number, nMin, and nMax");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("First should be a buffer object.");
+        return except("First should be a buffer object.");
 
     Local<Number> num = Nan::To<Number>(info[1]).ToLocalChecked();
     int timestamp = num->Value();
@@ -268,12 +270,12 @@ NAN_METHOD(scryptjane) {
 NAN_METHOD(keccak) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -288,12 +290,12 @@ NAN_METHOD(keccak) {
 NAN_METHOD(skein) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char *input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -308,12 +310,12 @@ NAN_METHOD(skein) {
 NAN_METHOD(groestl) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char *input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -328,12 +330,12 @@ NAN_METHOD(groestl) {
 NAN_METHOD(groestlmyriad) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -348,12 +350,12 @@ NAN_METHOD(groestlmyriad) {
 NAN_METHOD(fugue) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -368,12 +370,12 @@ NAN_METHOD(fugue) {
 NAN_METHOD(qubit) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -388,12 +390,12 @@ NAN_METHOD(qubit) {
 NAN_METHOD(hefty1) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -408,12 +410,12 @@ NAN_METHOD(hefty1) {
 NAN_METHOD(shavite3) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -430,18 +432,18 @@ NAN_METHOD(cryptonight) {
     bool fast = false;
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     if (info.Length() >= 2) {
         if(!info[1]->IsBoolean())
-            return THROW_ERROR_EXCEPTION("Argument 2 should be a boolean");
+            return except("Argument 2 should be a boolean");
         fast = info[1]->ToBoolean()->BooleanValue();
     }
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -459,12 +461,12 @@ NAN_METHOD(cryptonight) {
 NAN_METHOD(x13) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -479,12 +481,12 @@ NAN_METHOD(x13) {
 NAN_METHOD(nist5) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -499,12 +501,12 @@ NAN_METHOD(nist5) {
 NAN_METHOD(sha1) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -519,12 +521,12 @@ NAN_METHOD(sha1) {
 NAN_METHOD(x15) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
@@ -539,12 +541,12 @@ NAN_METHOD(x15) {
 NAN_METHOD(fresh) {
 
     if (info.Length() < 1)
-        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+        return except("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
-        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+        return except("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
     char *output = (char*) malloc(sizeof(char) * 32);
