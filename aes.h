@@ -1,18 +1,3 @@
-#include <iostream>
-#include <openssl/sha.h>
-#include "patternsearch.h"
-#include <openssl/aes.h>
-#include "main.h"
-#include <openssl/evp.h>
-#include <boost/thread.hpp>
-#if (__x86_64__)
-#include <cpuid.h>
-#endif
-#include "aligned_malloc.h"
-#include "util.h"
-#include "sha512.h"
-#include "aes.h"
-
 #define likely(x)       __builtin_expect((x),1)
 #define unlikely(x)     __builtin_expect((x),0)
 
