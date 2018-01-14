@@ -1,7 +1,7 @@
+#include "hodl/unit256.h"
 #include "hodl/aligned_malloc.h"
 #include "hodl/sha512.h"
 #include "hodl/aes.h"
-#include "hodl/unit256.h"
 
 #define likely(x)       __builtin_expect((x),1)
 #define unlikely(x)     __builtin_expect((x),0)
