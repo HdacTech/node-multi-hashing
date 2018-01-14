@@ -1,10 +1,15 @@
-#include "hodl/patternsearch.h"
 #include "hodl/aligned_malloc.h"
 #include "hodl/sha512.h"
 #include "hodl/aes.h"
+#include "hodl/unit256.h"
 
 #define likely(x)       __builtin_expect((x),1)
 #define unlikely(x)     __builtin_expect((x),0)
+
+namespace patternsearch {
+    std::vector< std::pair<uint32_t,uint32_t> > pattern_search( uint256 midHash, char* scratchpad, int totalThreads, int* minerStopFlag);
+    bool pattern_verify( uint256 midHash, uint32_t a, uint32_t b );
+}
 
 namespace patternsearch
 {
