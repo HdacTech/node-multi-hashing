@@ -5,6 +5,8 @@
 #include "nan.h"
 
 extern "C" {
+    #include "aes.h"
+    #include "argon2.h"
     #include "bcrypt.h"
     #include "blake.h"
     #include "c11.h"
@@ -48,6 +50,26 @@ extern "C" {
 
 using namespace node;
 using namespace v8;
+
+NAN_METHOD(aes) {
+
+    if (info.Length() < 1)
+        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+
+    Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
+
+    if(!Buffer::HasInstance(target))
+        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+
+    char * input = Buffer::Data(target);
+    char *output = (char*) malloc(sizeof(char) * 32);
+
+    uint32_t input_len = Buffer::Length(target);
+
+    blake_hash(input, output, input_len);
+
+    info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
+}
 
 NAN_METHOD(neoscrypt_hash) {
 
@@ -557,6 +579,7 @@ NAN_METHOD(fresh) {
 }
 
 NAN_MODULE_INIT(init) {
+    Nan::Set(target, Nan::New("aes").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(aes)).ToLocalChecked());
     Nan::Set(target, Nan::New("quark").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(quark)).ToLocalChecked());
     Nan::Set(target, Nan::New("x11").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(x11)).ToLocalChecked());
     Nan::Set(target, Nan::New("scrypt").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(scrypt)).ToLocalChecked());
