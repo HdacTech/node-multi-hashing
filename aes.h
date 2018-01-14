@@ -1,11 +1,4 @@
-#include <openssl/sha.h>
 #include "hodl/patternsearch.h"
-#include <openssl/aes.h>
-#include <openssl/evp.h>
-#include <boost/thread.hpp>
-#if (__x86_64__)
-#include <cpuid.h>
-#endif
 #include "hodl/aligned_malloc.h"
 #include "hodl/sha512.h"
 #include "hodl/aes.h"
