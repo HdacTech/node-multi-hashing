@@ -5,7 +5,6 @@
 #include "nan.h"
 
 extern "C" {
-    #include "aes.h"
     #include "argon2.h"
     #include "bcrypt.h"
     #include "blake.h"
@@ -579,7 +578,6 @@ NAN_METHOD(fresh) {
 }
 
 NAN_MODULE_INIT(init) {
-    Nan::Set(target, Nan::New("aes").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(aes)).ToLocalChecked());
     Nan::Set(target, Nan::New("quark").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(quark)).ToLocalChecked());
     Nan::Set(target, Nan::New("x11").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(x11)).ToLocalChecked());
     Nan::Set(target, Nan::New("scrypt").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(scrypt)).ToLocalChecked());
