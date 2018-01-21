@@ -41,6 +41,8 @@ extern "C" {
     #include "x14.h"
     #include "x15.h"
     #include "zr5.h"
+    #include "yescrypt/yescrypt.h"
+    #include "yescrypt/sha256_Y.h"
 }
 
 #include "boolberry.h"
