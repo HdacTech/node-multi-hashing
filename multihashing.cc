@@ -71,8 +71,7 @@ NAN_METHOD(lyra2z) {
 
     uint32_t input_len = Buffer::Length(target);
 
-    lyra2z_hash(input, output, 0);
-    //lyra2z_hash(input, output);
+    lyra2z_hash(input, output);
 
     info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
     //NanReturnValue( NanNewBufferHandle(output, 32) );
