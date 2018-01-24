@@ -78,22 +78,20 @@ NAN_METHOD(lyra2z) {
 }
 
 NAN_METHOD(neoscrypt) {
-
-    if (info.Length() < 2)
-        return THROW_ERROR_EXCEPTION("You must provide two arguments.");
+    if (info.Length() < 1)
+    return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
     if(!Buffer::HasInstance(target))
         return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
-char * input = Buffer::Data(target);
-    char output[32];
 
-    uint32_t input_len = Buffer::Length(target);
+     char *input =  ( char*) Buffer::Data(target);
+     char *output = ( char*) malloc(sizeof(char) * 32);
 
-    neoscrypt(input, output, 0);
+    neoscrypt(input, output,0);
 
-    info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
+    info.GetReturnValue().Set(Nan::NewBuffer( (char*)output, 32).ToLocalChecked());
 }
 
 NAN_METHOD(bcrypt) {
@@ -605,7 +603,6 @@ NAN_METHOD(yescrypt) {
 
 
 NAN_MODULE_INIT(init) {
-    //exports->Set(NanNew<String>("lyra2z"), NanNew<FunctionTemplate>(lyra2z)->GetFunction());
     Nan::Set(target, Nan::New("lyra2z").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(lyra2z)).ToLocalChecked());
     Nan::Set(target, Nan::New("quark").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(quark)).ToLocalChecked());
     Nan::Set(target, Nan::New("x11").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(x11)).ToLocalChecked());
@@ -629,7 +626,7 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("sha1").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(sha1)).ToLocalChecked());
     Nan::Set(target, Nan::New("x15").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(x15)).ToLocalChecked());
     Nan::Set(target, Nan::New("fresh").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(fresh)).ToLocalChecked());
-    Nan::Set(target, Nan::New("neoscrypt").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(neoscrypt)).ToLocalChecked());
+    Nan::Set(target, Nan::New("neoscrypt").ToLocalChecked(),Nan::GetFunction(Nan::New<v8::FunctionTemplate>(neoscrypt)).ToLocalChecked());
     Nan::Set(target, Nan::New("yescrypt").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(yescrypt)).ToLocalChecked());
 }
 
