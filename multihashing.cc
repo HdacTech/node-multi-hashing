@@ -19,7 +19,6 @@ extern "C" {
     #include "keccak.h"
     #include "Lyra2.h"
     #include "Lyra2RE.h"
-    #include "Lyra2REV2.h"
     #include "Lyra2Z.h"
     #include "neoscrypt.h"
     #include "nist5.h"
@@ -68,7 +67,7 @@ NAN_METHOD(lyra2rev2) {
 
     uint32_t input_len = Buffer::Length(target);
 
-    lyra2rev2_hash(input, output, 0);
+    lyra2rev2_hash(input, output);
 
     info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 }
