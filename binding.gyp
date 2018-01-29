@@ -17,7 +17,6 @@
                 "keccak.c",
                 "Lyra2.c",
                 "Lyra2RE.c",
-                "Lyra2REV2.c",
                 "Lyra2Z.c",
                 "neoscrypt.c",
                 "nist5.c",
