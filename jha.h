@@ -1,5 +1,5 @@
-#ifndef JHA_H
-#define JHA_H
+#ifndef JHA_H__
+#define JHA_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -7,7 +7,7 @@ extern "C" {
 
 #include <stdint.h>
 
-void jh_hash(const char* input, char* output, uint32_t len);
+void jha_hash(const char* input, char* output, uint32_t len);
 
 #ifdef __cplusplus
 }

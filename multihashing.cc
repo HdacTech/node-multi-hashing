@@ -15,7 +15,7 @@ extern "C" {
     #include "fugue.h"
     #include "groestl.h"
     #include "hefty1.h"
-    #include "jh.h"
+    #include "jha.h"
     #include "keccak.h"
     #include "Lyra2.h"
     #include "Lyra2RE.h"
