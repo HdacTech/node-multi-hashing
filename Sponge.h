@@ -22,6 +22,10 @@
 #ifndef SPONGE_H_
 #define SPONGE_H_
 
+#ifdef __cplusplus
+extern "C"{
+#endif
+
 #include <stdint.h>
 
 #if defined(__GNUC__)
@@ -78,16 +82,16 @@ void initState(uint64_t state[/*16*/]);
 
 //---- Squeezes
 void squeeze(uint64_t *state, unsigned char *out, unsigned int len);
-void reducedSqueezeRow0(uint64_t* state, uint64_t* row, uint64_t nCols);
+void reducedSqueezeRow0(uint64_t* state, uint64_t* row);
 
 //---- Absorbs
 void absorbBlock(uint64_t *state, const uint64_t *in);
 void absorbBlockBlake2Safe(uint64_t *state, const uint64_t *in);
 
 //---- Duplexes
-void reducedDuplexRow1(uint64_t *state, uint64_t *rowIn, uint64_t *rowOut, uint64_t nCols);
-void reducedDuplexRowSetup(uint64_t *state, uint64_t *rowIn, uint64_t *rowInOut, uint64_t *rowOut, uint64_t nCols);
-void reducedDuplexRow(uint64_t *state, uint64_t *rowIn, uint64_t *rowInOut, uint64_t *rowOut, uint64_t nCols);
+void reducedDuplexRow1(uint64_t *state, uint64_t *rowIn, uint64_t *rowOut);
+void reducedDuplexRowSetup(uint64_t *state, uint64_t *rowIn, uint64_t *rowInOut, uint64_t *rowOut);
+void reducedDuplexRow(uint64_t *state, uint64_t *rowIn, uint64_t *rowInOut, uint64_t *rowOut);
 
 //---- Misc
 void printArray(unsigned char *array, unsigned int size, char *name);
@@ -106,3 +110,6 @@ void printArray(unsigned char *array, unsigned int size, char *name);
 
 
 #endif /* SPONGE_H_ */
+#ifdef __cplusplus
+}
+#endif
