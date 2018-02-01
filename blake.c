@@ -14,4 +14,3 @@ void blake_hash(const char* input, char* output, uint32_t len)
     sph_blake256(&ctx_blake, input, len);
     sph_blake256_close(&ctx_blake, output);
 }
-
