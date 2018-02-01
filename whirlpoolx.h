@@ -1,5 +1,6 @@
 #ifndef WHIRLPOOLX_H
 #define WHIRLPOOLX_H
+
 #ifdef __cplusplus
 extern "C" {
 #endif
