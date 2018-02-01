@@ -46,7 +46,6 @@
                 "sha3/sph_skein.c",
                 "sha3/sph_whirlpool.c",
                 "sha3/sph_shabal.c",
-                "sha3/hamsi.c",
                 "whirlpoolx.c",
                 "x11.c",
                 "x11ghost.c",
