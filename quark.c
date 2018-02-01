@@ -39,7 +39,7 @@
 #include "sha3/sph_keccak.h"
 #include "sha3/sph_skein.h"
 
-
+#if 0
 static __inline uint32_t
 be32dec(const void *pp)
 {
@@ -105,6 +105,7 @@ be32dec_vect(uint32_t *dst, const unsigned char *src, uint32_t len)
 	for (i = 0; i < len / 4; i++)
 		dst[i] = be32dec(src + i * 4);
 }
+#endif
 
 void quark_hash(const char* input, char* output, uint32_t len)
 {
@@ -206,5 +207,4 @@ void quark_hash(const char* input, char* output, uint32_t len)
 
 
 }
-
 
