@@ -19,9 +19,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "argon2.h"
-#include "encoding.h"
-#include "core.h"
+#include <argon2.h>
+#include <encoding.h>
+#include <core.h>
 
 const char *argon2_type2string(argon2_type type, int uppercase) {
     switch (type) {
