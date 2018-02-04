@@ -2,8 +2,7 @@
 extern "C" {
 #endif
 
-// void neoscrypt(const unsigned char *input, unsigned char *output, unsigned int profile);
-void neoscrypt(const char* input, char* output, uint32_t len)
+void neoscrypt(const unsigned char *input, unsigned char *output, unsigned int profile);
 
 #if (__cplusplus)
 }
@@ -31,4 +30,3 @@ typedef uint8_t hash_digest[SCRYPT_HASH_DIGEST_SIZE];
     U32TO8_BE((p) + 4, (uint32_t)((v)      ));
 
 #endif
-
