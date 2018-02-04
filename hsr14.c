@@ -19,7 +19,7 @@
 
 #include "sm3.h"
 
-#include <common.h>
+#include "common.h"
 
 void hsr_hash(const char* input, char* output, uint32_t len)
 {

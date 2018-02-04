@@ -10,7 +10,7 @@
 #include "sha3/sph_echo.h"
 #include "gost.h"
 
-#include <common.h>
+#include "common.h"
 
 void phi_hash(const char* input, char* output, uint32_t len)
 {
