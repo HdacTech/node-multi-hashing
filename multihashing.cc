@@ -244,7 +244,7 @@ NAN_METHOD(scrypt) {
 
    uint32_t input_len = Buffer::Length(target);
 
-   scrypt_N_R_1_256(input, output, nValue, rValue, input_len);
+   scrypt_1024_1_1_256(input, output, nValue, rValue, input_len);
 
    info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 }
@@ -322,7 +322,7 @@ NAN_METHOD(keccak) {
 
     unsigned int dSize = Buffer::Length(target);
 
-    keccak_hash(input, output, dSize);
+    keccak256_hash(input, output, dSize);
 
     info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 }
