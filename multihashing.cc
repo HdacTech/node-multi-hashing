@@ -133,7 +133,7 @@ NAN_METHOD(neoscrypt_hash) {
         return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
 
     char * input = Buffer::Data(target);
-    char output[32];
+    char *output = (char*) malloc(sizeof(char) * 32);
 
     uint32_t input_len = Buffer::Length(target);
 
