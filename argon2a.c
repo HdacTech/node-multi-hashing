@@ -5,9 +5,9 @@
 
 #include "sysendian.h"
 
-#include <ar2/argon2.h>
-#include <ar2/cores.h>
-#include <ar2/ar2-scrypt-jane.h>
+#include "ar2/argon2.h"
+#include "ar2/cores.h"
+#include "ar2/ar2-scrypt-jane.h"
 
 #define _ALIGN(x) __attribute__ ((aligned(x)))
 
