@@ -126,7 +126,7 @@ NAN_METHOD(lyra2z) {
     info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 }
 
-NAN_METHOD(neoscrypt_hash) {
+NAN_METHOD(neoscrypt) {
 
     if (info.Length() < 2)
         return THROW_ERROR_EXCEPTION("You must provide two arguments.");
@@ -140,7 +140,7 @@ NAN_METHOD(neoscrypt_hash) {
 
     uint32_t input_len = Buffer::Length(target);
 
-    neoscrypt((unsigned char *)input, (unsigned char *)output, 0x80000620);
+    neoscrypt_hash((unsigned char *)input, (unsigned char *)output, 0x80000620);
 
     info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 }
