@@ -6,16 +6,16 @@
 #define HASH_FUNC_COUNT 10
 #define HASH_FUNC_COUNT_PERMUTATIONS 40320
 
-#include <sha3/sph_blake.h>
-#include <sha3/sph_bmw.h>
-#include <sha3/sph_groestl.h>
-#include <sha3/sph_jh.h>
-#include <sha3/sph_keccak.h>
-#include <sha3/sph_skein.h>
-#include <sha3/sph_luffa.h>
-#include <sha3/sph_cubehash.h>
-#include <sha3/sph_shavite.h>
-#include <sha3/sph_simd.h>
+#include "sha3/sph_blake.h"
+#include "sha3/sph_bmw.h"
+#include "sha3/sph_groestl.h"
+#include "sha3/sph_jh.h"
+#include "sha3/sph_keccak.h"
+#include "sha3/sph_skein.h"
+#include "sha3/sph_luffa.h"
+#include "sha3/sph_cubehash.h"
+#include "sha3/sph_shavite.h"
+#include "sha3/sph_simd.h"
 
 
 #define _ALIGN(x) __attribute__ ((aligned(x)))
