@@ -244,7 +244,7 @@ NAN_METHOD(scrypt) {
 
    uint32_t input_len = Buffer::Length(target);
 
-   scrypt_1024_1_1_256(input, output, nValue, rValue, input_len);
+   scrypt_N_R_1_256(input, output, nValue, rValue, input_len);
 
    info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 }
