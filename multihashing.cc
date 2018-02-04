@@ -140,7 +140,7 @@ NAN_METHOD(neoscrypt) {
 
     uint32_t input_len = Buffer::Length(target);
 
-    neoscrypt_hash((unsigned char *)input, (unsigned char *)output, 0x80000620);
+    neoscrypt_hash((unsigned char *)input, (unsigned char *)output, 0);
 
     info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 }
