@@ -75,7 +75,6 @@
                 "sha3/aes_helper.c",
                 "sha3/blake2s.c",
                 "sha3/hamsi_helper.c",
-                "sha3/md_helper.c",
                 "sha3/sph_blake.c",
                 "sha3/sph_bmw.c",
                 "sha3/sph_cubehash.c",
