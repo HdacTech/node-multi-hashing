@@ -49,4 +49,3 @@ void lyra2z_hash(const char* input, char* output)
 	
 	memcpy(output, hashB, 32);
 }
-
