@@ -3,8 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <sha3/sph_blake.h>
-
+#include "sha3/sph_blake.h"
 
 void blake_hash(const char* input, char* output, uint32_t len)
 {
