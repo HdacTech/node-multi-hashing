@@ -82,4 +82,3 @@ void x11_hash(const char* input, char* output, uint32_t len)
     memcpy(output, hashA, 32);
 
 }
-
