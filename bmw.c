@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <bmw.h>
+#include "bmw.h"
 
 #include "sha3/sph_bmw.h"
 

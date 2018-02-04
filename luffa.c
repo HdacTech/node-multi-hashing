@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <luffa.h>
+#include "luffa.h"
 
 #include "sha3/sph_luffa.h"
 

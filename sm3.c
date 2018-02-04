@@ -49,7 +49,7 @@
 
 #include <string.h>
 
-#include <sm3.h>
+#include "sm3.h"
 
 void sm3_init(sm3_ctx_t *ctx)
 {
