@@ -9,7 +9,7 @@
 #include "sha3/sph_keccak.h"
 #include "sha3/sph_skein.h"
 
-#include <jha.h>
+#include "jha.h"
 #include <common.h>
 
 void jha_hash(const char* input, char* output, uint32_t len)

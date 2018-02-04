@@ -1,4 +1,3 @@
-
 #include <gmp.h> /* user MPIR lib for vstudio */
 #include <stdlib.h>
 #include <stdbool.h>

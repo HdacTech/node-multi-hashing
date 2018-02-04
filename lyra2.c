@@ -22,8 +22,8 @@
 #include <string.h>
 #include <time.h>
 
-#include <lyra2.h>
-#include <Sponge.h>
+#include "lyra2.h"
+#include "Sponge.h"
 
 /**
  * Executes Lyra2 based on the G function from Blake2b. This version supports salts and passwords

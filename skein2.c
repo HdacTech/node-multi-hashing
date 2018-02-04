@@ -1,4 +1,3 @@
-
 #include "skein2.h"
 
 #include <stdio.h>

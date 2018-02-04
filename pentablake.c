@@ -1,4 +1,4 @@
-#include <pentablake.h>
+#include "pentablake.h"
 
 #include <stdio.h>
 #include <stdlib.h>

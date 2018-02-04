@@ -5,7 +5,7 @@
 #include <memory.h>
 #include <math.h>
 
-#include <gost.h>
+#include "gost.h"
 
 #ifdef __cplusplus
 extern "C"{

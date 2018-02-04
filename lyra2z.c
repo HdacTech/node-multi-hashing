@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <lyra2z.h>
+#include "lyra2z.h"
 
 #include "sha3/sph_blake.h"
 

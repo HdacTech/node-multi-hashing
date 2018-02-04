@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <pomelo.h>
+#include "pomelo.h"
 
 #define F0(i)  {               \
 	i0 = ((i) - 0*4)  & mask1; \

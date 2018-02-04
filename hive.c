@@ -9,7 +9,7 @@
 #include "sha3/sph_shabal.h"
 #include "sha3/sph_blake.h"
 
-#include <pomelo.h>
+#include "pomelo.h"
 
 void hive_hash(const char *input, char *output, uint32_t len)
 {
