@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <sysendian.h>
+#include "sysendian.h"
 
 #include <ar2/argon2.h>
 #include <ar2/cores.h>
