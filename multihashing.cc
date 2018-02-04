@@ -73,7 +73,6 @@ extern "C" {
     #include "x15.h"
     #include "x16r.h"
     #include "x17.h"
-    #include "x5.h"
     #include "xevan.h"
     #include "yescrypt.h"
     #include "zr5.h"

@@ -69,7 +69,6 @@
                 "x15.c",
                 "x16r.c",
                 "x17.c",
-                "x5.c",
                 "xevan.c",
                 "yescrypt-opt.c",
                 "yescrypt-platform.c",
