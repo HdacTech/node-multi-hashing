@@ -6,7 +6,7 @@
 #include <float.h>
 #include <math.h>
 
-#include <magimath.h>
+#include "magimath.h"
 
 #include "sha3/sph_sha2.h"
 #include "sha3/sph_keccak.h"
