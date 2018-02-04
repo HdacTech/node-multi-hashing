@@ -9,12 +9,12 @@
 
 #include <magimath.h>
 
-#include <sha3/sph_sha2.h>
-#include <sha3/sph_keccak.h>
-#include <sha3/sph_haval.h>
-#include <sha3/sph_tiger.h>
-#include <sha3/sph_whirlpool.h>
-#include <sha3/sph_ripemd.h>
+#include "sha3/sph_sha2.h"
+#include "sha3/sph_keccak.h"
+#include "sha3/sph_haval.h"
+#include "sha3/sph_tiger.h"
+#include "sha3/sph_whirlpool.h"
+#include "sha3/sph_ripemd.h"
 
 static void mpz_set_uint256(mpz_t r, uint8_t *u)
 {

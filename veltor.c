@@ -3,10 +3,10 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <sha3/sph_skein.h>
-#include <sha3/sph_shavite.h>
-#include <sha3/sph_shabal.h>
-//#include <sha3/sph_streebog.h>
+#include "sha3/sph_skein.h"
+#include "sha3/sph_shavite.h"
+#include "sha3/sph_shabal.h"
+//#include "sha3/sph_streebog.h"
 
 #include "gost.h"
 

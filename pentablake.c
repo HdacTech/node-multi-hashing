@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <sha3/sph_blake.h>
+#include "sha3/sph_blake.h"
 
 #include <stdlib.h>
 

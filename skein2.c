@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <sha3/sph_skein.h>
+#include "sha3/sph_skein.h"
 #include "sha256.h"
 
 #include <stdlib.h>

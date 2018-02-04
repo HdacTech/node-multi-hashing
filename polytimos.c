@@ -3,12 +3,12 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <sha3/sph_skein.h>
-#include <sha3/sph_shabal.h>
-#include <sha3/sph_echo.h>
-#include <sha3/sph_luffa.h>
-#include <sha3/sph_fugue.h>
-#include <gost.h>
+#include "sha3/sph_skein.h"
+#include "sha3/sph_shabal.h"
+#include "sha3/sph_echo.h"
+#include "sha3/sph_luffa.h"
+#include "sha3/sph_fugue.h"
+#include "gost.h"
 
 #include <common.h>
 

@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdint.h>
 
-#include <sha3/blake2s.h>
+#include "sha3/blake2s.h"
 
 void blake2s_hash(const char* input, char* output, uint32_t len)
 {

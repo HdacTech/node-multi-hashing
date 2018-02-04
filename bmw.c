@@ -5,7 +5,7 @@
 
 #include <bmw.h>
 
-#include <sha3/sph_bmw.h>
+#include "sha3/sph_bmw.h"
 
 void bmw_hash(const char* input, char* output, uint32_t len)
 {

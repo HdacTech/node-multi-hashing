@@ -3,11 +3,11 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <sha3/sph_blake.h>
-#include <sha3/sph_groestl.h>
-#include <sha3/sph_jh.h>
-#include <sha3/sph_keccak.h>
-#include <sha3/sph_skein.h>
+#include "sha3/sph_blake.h"
+#include "sha3/sph_groestl.h"
+#include "sha3/sph_jh.h"
+#include "sha3/sph_keccak.h"
+#include "sha3/sph_skein.h"
 
 #include <jha.h>
 #include <common.h>
