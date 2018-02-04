@@ -5,7 +5,7 @@
 #include "nan.h"
 
 extern "C" {
-    #include "argon2.h"
+    //#include "argon2.h"
     #include "argon2a.h"
     #include "bastion.h"
     #include "bcrypt.h"
