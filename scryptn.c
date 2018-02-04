@@ -30,7 +30,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <inttypes.h>
 
 #include "scryptn.h"
 #include "sha256.h"
@@ -45,8 +44,8 @@ static void smix(uint8_t *, size_t, uint64_t, uint32_t *, uint32_t *);
 static void
 blkcpy(void * dest, void * src, size_t len)
 {
-	size_t * D = dest;
-	size_t * S = src;
+	size_t * D = (size_t *)dest;
+	size_t * S = (size_t *)src;
 	size_t L = len / sizeof(size_t);
 	size_t i;
 
@@ -57,8 +56,8 @@ blkcpy(void * dest, void * src, size_t len)
 static void
 blkxor(void * dest, void * src, size_t len)
 {
-	size_t * D = dest;
-	size_t * S = src;
+	size_t * D = (size_t *)dest;
+	size_t * S = (size_t *)src;
 	size_t L = len / sizeof(size_t);
 	size_t i;
 
@@ -151,7 +150,7 @@ blockmix_salsa8(uint32_t * Bin, uint32_t * Bout, uint32_t * X, size_t r)
 static uint64_t
 integerify(void * B, size_t r)
 {
-	uint32_t * X = (void *)((uintptr_t)(B) + (2 * r - 1) * 64);
+	uint32_t * X = (uint32_t *)((uintptr_t)(B) + (2 * r - 1) * 64);
 
 	return (((uint64_t)(X[1]) << 32) + X[0]);
 }
@@ -250,10 +249,9 @@ void scrypt_N_R_1_256(const char* input, char* output, uint32_t N, uint32_t R, u
 {
 	//char scratchpad[131583];
     char *scratchpad;
-    
+
     // align on 4 byte boundary
     scratchpad = (char*)malloc(128*N*R + (128*R)+(256*R)+64+64);
 	scrypt_N_R_1_256_sp(input, output, scratchpad, N, R, len);
     free(scratchpad);
 }
-
