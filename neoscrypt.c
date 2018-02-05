@@ -50,258 +50,7 @@ typedef unsigned int  bool;
 #define MAX(a, b) ((a) > (b) ? a : b)
 
 
-/* SHA-256 */
-
-static const uint32_t sha256_constants[64] = {
-    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
-    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
-    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
-    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
-    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
-    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
-    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
-    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
-};
-
-#define Ch(x,y,z)  (z ^ (x & (y ^ z)))
-#define Maj(x,y,z) (((x | y) & z) | (x & y))
-#define S0(x)      (ROTR32(x,  2) ^ ROTR32(x, 13) ^ ROTR32(x, 22))
-#define S1(x)      (ROTR32(x,  6) ^ ROTR32(x, 11) ^ ROTR32(x, 25))
-#define G0(x)      (ROTR32(x,  7) ^ ROTR32(x, 18) ^ (x >>  3))
-#define G1(x)      (ROTR32(x, 17) ^ ROTR32(x, 19) ^ (x >> 10))
-#define W0(in,i)   (U8TO32_BE(&in[i * 4]))
-#define W1(i)      (G1(w[i - 2]) + w[i - 7] + G0(w[i - 15]) + w[i - 16])
-#define STEP(i) \
-    t1 = S0(r[0]) + Maj(r[0], r[1], r[2]); \
-    t0 = r[7] + S1(r[4]) + Ch(r[4], r[5], r[6]) + sha256_constants[i] + w[i]; \
-    r[7] = r[6]; \
-    r[6] = r[5]; \
-    r[5] = r[4]; \
-    r[4] = r[3] + t0; \
-    r[3] = r[2]; \
-    r[2] = r[1]; \
-    r[1] = r[0]; \
-    r[0] = t0 + t1;
-
-
-typedef struct sha256_hash_state_t {
-    uint32_t H[8];
-    uint64_t T;
-    uint32_t leftover;
-    uint8_t buffer[SCRYPT_HASH_BLOCK_SIZE];
-} sha256_hash_state;
-
-
-static void sha256_blocks(sha256_hash_state *S, const uint8_t *in, size_t blocks) {
-    uint32_t r[8], w[64], t0, t1;
-    size_t i;
-
-    for(i = 0; i < 8; i++)
-      r[i] = S->H[i];
-
-    while(blocks--) {
-        for(i =  0; i < 16; i++) {
-            w[i] = W0(in, i);
-        }
-        for(i = 16; i < 64; i++) {
-            w[i] = W1(i);
-        }
-        for(i =  0; i < 64; i++) {
-            STEP(i);
-        }
-        for(i =  0; i <  8; i++) {
-            r[i] += S->H[i];
-            S->H[i] = r[i];
-        }
-        S->T += SCRYPT_HASH_BLOCK_SIZE * 8;
-        in += SCRYPT_HASH_BLOCK_SIZE;
-    }
-}
-
-static void neoscrypt_hash_init_sha256(sha256_hash_state *S) {
-    S->H[0] = 0x6a09e667;
-    S->H[1] = 0xbb67ae85;
-    S->H[2] = 0x3c6ef372;
-    S->H[3] = 0xa54ff53a;
-    S->H[4] = 0x510e527f;
-    S->H[5] = 0x9b05688c;
-    S->H[6] = 0x1f83d9ab;
-    S->H[7] = 0x5be0cd19;
-    S->T = 0;
-    S->leftover = 0;
-}
-
-static void neoscrypt_hash_update_sha256(sha256_hash_state *S, const uint8_t *in, size_t inlen) {
-    size_t blocks, want;
-
-    /* handle the previous data */
-    if(S->leftover) {
-        want = (SCRYPT_HASH_BLOCK_SIZE - S->leftover);
-        want = (want < inlen) ? want : inlen;
-        memcpy(S->buffer + S->leftover, in, want);
-        S->leftover += (uint32_t)want;
-        if(S->leftover < SCRYPT_HASH_BLOCK_SIZE)
-          return;
-        in += want;
-        inlen -= want;
-        sha256_blocks(S, S->buffer, 1);
-    }
-
-    /* handle the current data */
-    blocks = (inlen & ~(SCRYPT_HASH_BLOCK_SIZE - 1));
-    S->leftover = (uint32_t)(inlen - blocks);
-    if(blocks) {
-        sha256_blocks(S, in, blocks / SCRYPT_HASH_BLOCK_SIZE);
-        in += blocks;
-    }
-
-    /* handle leftover data */
-    if(S->leftover)
-      memcpy(S->buffer, in, S->leftover);
-}
-
-static void neoscrypt_hash_finish_sha256(sha256_hash_state *S, uint8_t *hash) {
-    uint64_t t = S->T + (S->leftover * 8);
-
-    S->buffer[S->leftover] = 0x80;
-    if(S->leftover <= 55) {
-        memset(S->buffer + S->leftover + 1, 0, 55 - S->leftover);
-    } else {
-        memset(S->buffer + S->leftover + 1, 0, 63 - S->leftover);
-        sha256_blocks(S, S->buffer, 1);
-        memset(S->buffer, 0, 56);
-    }
-
-    U64TO8_BE(S->buffer + 56, t);
-    sha256_blocks(S, S->buffer, 1);
-
-    U32TO8_BE(&hash[ 0], S->H[0]);
-    U32TO8_BE(&hash[ 4], S->H[1]);
-    U32TO8_BE(&hash[ 8], S->H[2]);
-    U32TO8_BE(&hash[12], S->H[3]);
-    U32TO8_BE(&hash[16], S->H[4]);
-    U32TO8_BE(&hash[20], S->H[5]);
-    U32TO8_BE(&hash[24], S->H[6]);
-    U32TO8_BE(&hash[28], S->H[7]);
-}
-
-static void neoscrypt_hash_sha256(hash_digest hash, const uint8_t *m, size_t mlen) {
-    sha256_hash_state st;
-    neoscrypt_hash_init_sha256(&st);
-    neoscrypt_hash_update_sha256(&st, m, mlen);
-    neoscrypt_hash_finish_sha256(&st, hash);
-}
-
-
-/* HMAC for SHA-256 */
-
-typedef struct sha256_hmac_state_t {
-    sha256_hash_state inner, outer;
-} sha256_hmac_state;
-
-static void neoscrypt_hmac_init_sha256(sha256_hmac_state *st, const uint8_t *key, size_t keylen) {
-    uint8_t pad[SCRYPT_HASH_BLOCK_SIZE] = {0};
-    size_t i;
-
-    neoscrypt_hash_init_sha256(&st->inner);
-    neoscrypt_hash_init_sha256(&st->outer);
-
-    if(keylen <= SCRYPT_HASH_BLOCK_SIZE) {
-        /* use the key directly if it's <= blocksize bytes */
-        memcpy(pad, key, keylen);
-    } else {
-        /* if it's > blocksize bytes, hash it */
-        neoscrypt_hash_sha256(pad, key, keylen);
-    }
-
-    /* inner = (key ^ 0x36) */
-    /* h(inner || ...) */
-    for(i = 0; i < SCRYPT_HASH_BLOCK_SIZE; i++)
-      pad[i] ^= 0x36;
-    neoscrypt_hash_update_sha256(&st->inner, pad, SCRYPT_HASH_BLOCK_SIZE);
-
-    /* outer = (key ^ 0x5c) */
-    /* h(outer || ...) */
-    for(i = 0; i < SCRYPT_HASH_BLOCK_SIZE; i++)
-      pad[i] ^= (0x5c ^ 0x36);
-    neoscrypt_hash_update_sha256(&st->outer, pad, SCRYPT_HASH_BLOCK_SIZE);
-}
-
-static void neoscrypt_hmac_update_sha256(sha256_hmac_state *st, const uint8_t *m, size_t mlen) {
-    /* h(inner || m...) */
-    neoscrypt_hash_update_sha256(&st->inner, m, mlen);
-}
-
-static void neoscrypt_hmac_finish_sha256(sha256_hmac_state *st, hash_digest mac) {
-    /* h(inner || m) */
-    hash_digest innerhash;
-    neoscrypt_hash_finish_sha256(&st->inner, innerhash);
-
-    /* h(outer || h(inner || m)) */
-    neoscrypt_hash_update_sha256(&st->outer, innerhash, sizeof(innerhash));
-    neoscrypt_hash_finish_sha256(&st->outer, mac);
-}
-
-
-/* PBKDF2 for SHA-256 */
-
-static void neoscrypt_pbkdf2_sha256(const uint8_t *password, size_t password_len,
-  const uint8_t *salt, size_t salt_len, uint64_t N, uint8_t *output, size_t output_len) {
-    sha256_hmac_state hmac_pw, hmac_pw_salt, work;
-    hash_digest ti, u;
-    uint8_t be[4];
-    uint32_t i, j, k, blocks;
-
-    /* bytes must be <= (0xffffffff - (SCRYPT_HASH_DIGEST_SIZE - 1)), which they will always be under scrypt */
-
-    /* hmac(password, ...) */
-    neoscrypt_hmac_init_sha256(&hmac_pw, password, password_len);
-
-    /* hmac(password, salt...) */
-    hmac_pw_salt = hmac_pw;
-    neoscrypt_hmac_update_sha256(&hmac_pw_salt, salt, salt_len);
-
-    blocks = ((uint32_t)output_len + (SCRYPT_HASH_DIGEST_SIZE - 1)) / SCRYPT_HASH_DIGEST_SIZE;
-    for(i = 1; i <= blocks; i++) {
-        /* U1 = hmac(password, salt || be(i)) */
-        U32TO8_BE(be, i);
-        work = hmac_pw_salt;
-        neoscrypt_hmac_update_sha256(&work, be, 4);
-        neoscrypt_hmac_finish_sha256(&work, ti);
-        memcpy(u, ti, sizeof(u));
-
-        /* T[i] = U1 ^ U2 ^ U3... */
-        for(j = 0; j < N - 1; j++) {
-            /* UX = hmac(password, U{X-1}) */
-            work = hmac_pw;
-            neoscrypt_hmac_update_sha256(&work, u, SCRYPT_HASH_DIGEST_SIZE);
-            neoscrypt_hmac_finish_sha256(&work, u);
-
-            /* T[i] ^= UX */
-            for(k = 0; k < sizeof(u); k++)
-              ti[k] ^= u[k];
-        }
-
-        memcpy(output, ti, (output_len > SCRYPT_HASH_DIGEST_SIZE) ? SCRYPT_HASH_DIGEST_SIZE : output_len);
-        output += SCRYPT_HASH_DIGEST_SIZE;
-        output_len -= SCRYPT_HASH_DIGEST_SIZE;
-    }
-}
-
-
 /* NeoScrypt */
-
-#if defined(ASM)
-
-extern void neoscrypt_salsa(uint *X, uint rounds);
-extern void neoscrypt_salsa_tangle(uint *X, uint count);
-extern void neoscrypt_chacha(uint *X, uint rounds);
-
-extern void neoscrypt_blkcpy(void *dstp, const void *srcp, uint len);
-extern void neoscrypt_blkswp(void *blkAp, void *blkBp, uint len);
-extern void neoscrypt_blkxor(void *dstp, const void *srcp, uint len);
-
-#else
 
 /* Salsa20, rounds must be a multiple of 2 */
 static void neoscrypt_salsa(uint *X, uint rounds) {
@@ -425,8 +174,6 @@ static void neoscrypt_blkxor(void *dstp, const void *srcp, uint len) {
         dst[i + 3] ^= src[i + 3];
     }
 }
-
-#endif
 
 /* 32-bit / 64-bit optimised memcpy() */
 static void neoscrypt_copy(void *dstp, const void *srcp, uint len) {
@@ -820,51 +567,11 @@ static void neoscrypt_blkmix(uint *X, uint *Y, uint r, uint mixmode) {
 }
 
 /* NeoScrypt core engine:
- * p = 1, salt = password;
- * Basic customisation (required):
- *   profile bit 0:
- *     0 = NeoScrypt(128, 2, 1) with Salsa20/20 and ChaCha20/20;
- *     1 = Scrypt(1024, 1, 1) with Salsa20/8;
- *   profile bits 4 to 1:
- *     0000 = FastKDF-BLAKE2s;
- *     0001 = PBKDF2-HMAC-SHA256;
- * Extended customisation (optional):
- *   profile bit 31:
- *     0 = extended customisation absent;
- *     1 = extended customisation present;
- *   profile bits 7 to 5 (rfactor):
- *     000 = r of 1;
- *     001 = r of 2;
- *     010 = r of 4;
- *     ...
- *     111 = r of 128;
- *   profile bits 12 to 8 (Nfactor):
- *     00000 = N of 2;
- *     00001 = N of 4;
- *     00010 = N of 8;
- *     .....
- *     00110 = N of 128;
- *     .....
- *     01001 = N of 1024;
- *     .....
- *     11110 = N of 2147483648;
- *   profile bits 30 to 13 are reserved */
-void neoscrypt(const uchar *password, uchar *output, uint profile) {
-    uint N = 128, r = 2, dblmix = 1, mixmode = 0x14, stack_align = 0x40;
-    uint kdf, i, j;
+ * N = 128, r = 2, p = 1, salt = password */
+void neoscrypt(const uchar *password, uchar *output) {
+    uint N = 128, r = 2, mixmode = 0x14, stack_align = 0x40;
+    uint i, j;
     uint *X, *Y, *Z, *V;
-
-    if(profile & 0x1) {
-        N = 1024;        /* N = (1 << (Nfactor + 1)); */
-        r = 1;           /* r = (1 << rfactor); */
-        dblmix = 0;      /* Salsa only */
-        mixmode = 0x08;  /* 8 rounds */
-    }
-
-    if(profile >> 31) {
-        N = (1 << (((profile >> 8) & 0x1F) + 1));
-        r = (1 << ((profile >> 5) & 0x7));
-    }
 
     uchar stack[(N + 3) * r * 2 * SCRYPT_BLOCK_SIZE + stack_align];
     /* X = r * 2 * SCRYPT_BLOCK_SIZE */
@@ -876,49 +583,28 @@ void neoscrypt(const uchar *password, uchar *output, uint profile) {
     /* V = N * r * 2 * SCRYPT_BLOCK_SIZE */
     V = &X[96 * r];
 
-    /* X = KDF(password, salt) */
-    kdf = (profile >> 1) & 0xF;
+    neoscrypt_fastkdf(password, 80, password, 80, 32, (uchar *) X, r * 2 * SCRYPT_BLOCK_SIZE);
 
-    switch(kdf) {
+    /* Process ChaCha 1st, Salsa 2nd and XOR them into PBKDF2 */
 
-        default:
-        case(0x0):
-            neoscrypt_fastkdf(password, 80, password, 80, 32, (uchar *) X, r * 2 * SCRYPT_BLOCK_SIZE);
-            break;
+    /* blkcpy(Z, X) */
+    neoscrypt_blkcpy(&Z[0], &X[0], r * 2 * SCRYPT_BLOCK_SIZE);
 
-        case(0x1):
-            neoscrypt_pbkdf2_sha256(password, 80, password, 80, 1, (uchar *) X, r * 2 * SCRYPT_BLOCK_SIZE);
-            break;
-
+    /* Z = SMix(Z) */
+    for(i = 0; i < N; i++) {
+        /* blkcpy(V, Z) */
+        neoscrypt_blkcpy(&V[i * (32 * r)], &Z[0], r * 2 * SCRYPT_BLOCK_SIZE);
+        /* blkmix(Z, Y) */
+        neoscrypt_blkmix(&Z[0], &Y[0], r, (mixmode | 0x0100));
     }
-
-    /* Process ChaCha 1st, Salsa 2nd and XOR them into FastKDF; otherwise Salsa only */
-
-    if(dblmix) {
-        /* blkcpy(Z, X) */
-        neoscrypt_blkcpy(&Z[0], &X[0], r * 2 * SCRYPT_BLOCK_SIZE);
-
-        /* Z = SMix(Z) */
-        for(i = 0; i < N; i++) {
-            /* blkcpy(V, Z) */
-            neoscrypt_blkcpy(&V[i * (32 * r)], &Z[0], r * 2 * SCRYPT_BLOCK_SIZE);
-            /* blkmix(Z, Y) */
-            neoscrypt_blkmix(&Z[0], &Y[0], r, (mixmode | 0x0100));
-        }
-        for(i = 0; i < N; i++) {
-            /* integerify(Z) mod N */
-            j = (32 * r) * (Z[16 * (2 * r - 1)] & (N - 1));
-            /* blkxor(Z, V) */
-            neoscrypt_blkxor(&Z[0], &V[j], r * 2 * SCRYPT_BLOCK_SIZE);
-            /* blkmix(Z, Y) */
-            neoscrypt_blkmix(&Z[0], &Y[0], r, (mixmode | 0x0100));
-        }
+    for(i = 0; i < N; i++) {
+        /* integerify(Z) mod N */
+        j = (32 * r) * (Z[16 * (2 * r - 1)] & (N - 1));
+        /* blkxor(Z, V) */
+        neoscrypt_blkxor(&Z[0], &V[j], r * 2 * SCRYPT_BLOCK_SIZE);
+        /* blkmix(Z, Y) */
+        neoscrypt_blkmix(&Z[0], &Y[0], r, (mixmode | 0x0100));
     }
-
-#if (ASM)
-    /* Must be called before and after SSE2 Salsa */
-    neoscrypt_salsa_tangle(&X[0], r * 2);
-#endif
 
     /* X = SMix(X) */
     for(i = 0; i < N; i++) {
@@ -936,26 +622,10 @@ void neoscrypt(const uchar *password, uchar *output, uint profile) {
         neoscrypt_blkmix(&X[0], &Y[0], r, mixmode);
     }
 
-#if (ASM)
-    neoscrypt_salsa_tangle(&X[0], r * 2);
-#endif
-
-    if(dblmix)
-      /* blkxor(X, Z) */
-      neoscrypt_blkxor(&X[0], &Z[0], r * 2 * SCRYPT_BLOCK_SIZE);
+    /* blkxor(X, Z) */
+    neoscrypt_blkxor(&X[0], &Z[0], r * 2 * SCRYPT_BLOCK_SIZE);
 
     /* output = KDF(password, X) */
-    switch(kdf) {
-
-        default:
-        case(0x0):
-            neoscrypt_fastkdf(password, 80, (uchar *) X, r * 2 * SCRYPT_BLOCK_SIZE, 32, output, 32);
-            break;
-
-        case(0x1):
-            neoscrypt_pbkdf2_sha256(password, 80, (uchar *) X, r * 2 * SCRYPT_BLOCK_SIZE, 1, output, 32);
-            break;
-
-    }
+    neoscrypt_fastkdf(password, 80, (uchar *) X, r * 2 * SCRYPT_BLOCK_SIZE, 32, output, 32);
 
 }
