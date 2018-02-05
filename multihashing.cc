@@ -138,8 +138,8 @@ NAN_METHOD(neoscrypt) {
      char *input =  ( char*) Buffer::Data(target);
      char *output = ( char*) malloc(sizeof(char) * 32);
 
-    uint32_t input_len = Buffer::Length(target);
-    neoscrypt_hash((unsigned char *)input, (unsigned char *)output, 0x80000620);
+    //uint32_t input_len = Buffer::Length(target);
+    neoscrypt((unsigned char *)input, (unsigned char *)output, 0x80000620);
     //neoscrypt(input, output, 0);
 
     info.GetReturnValue().Set(Nan::NewBuffer( (char*)output, 32).ToLocalChecked());
