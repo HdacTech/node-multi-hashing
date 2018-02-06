@@ -142,7 +142,9 @@ void neoscrypt(const v8::FunctionCallbackInfo<v8::Value>& args) {
    }
 
    char * input = Buffer::Data(target);
-   char output[32];
+   //char output[32];
+   char *output = (char*) malloc(sizeof(char) * 32);
+
 
    neoscrypt(input, output, 0);
 
