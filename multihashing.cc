@@ -658,32 +658,32 @@ NAN_METHOD(yescrypt) {
 }
 
 void init(v8::Local<v8::Object> target) {
-    NODE_SET_METHOD(target, "bcrypt", bcrypt);
-    NODE_SET_METHOD(target, "boolberry", boolberry);
-    NODE_SET_METHOD(target, "blake", blake);
-    NODE_SET_METHOD(target, "cryptonight", cryptonight);
-    NODE_SET_METHOD(target, "fresh", fresh);
-    NODE_SET_METHOD(target, "fugue", fugue);
-    NODE_SET_METHOD(target, "groestl", groestl);
-    NODE_SET_METHOD(target, "groestlmyriad", groestlmyriad);
-    NODE_SET_METHOD(target, "hefty1", hefty1);
+    //NODE_SET_METHOD(target, "bcrypt", bcrypt);
+    //NODE_SET_METHOD(target, "boolberry", boolberry);
+    //NODE_SET_METHOD(target, "blake", blake);
+    //NODE_SET_METHOD(target, "cryptonight", cryptonight);
+    //NODE_SET_METHOD(target, "fresh", fresh);
+    //NODE_SET_METHOD(target, "fugue", fugue);
+    //NODE_SET_METHOD(target, "groestl", groestl);
+    //NODE_SET_METHOD(target, "groestlmyriad", groestlmyriad);
+    //NODE_SET_METHOD(target, "hefty1", hefty1);
     NODE_SET_METHOD(target, "neoscrypt", neoscrypt);
-    NODE_SET_METHOD(target, "nist5", nist5);
-    NODE_SET_METHOD(target, "quark", quark);
-    NODE_SET_METHOD(target, "qubit", qubit);
-    NODE_SET_METHOD(target, "keccak", keccak);
-    NODE_SET_METHOD(target, "lyra2rev2", lyra2rev2);
-    NODE_SET_METHOD(target, "lyra2z", lyra2z);
-    NODE_SET_METHOD(target, "scrypt", scrypt);
-    NODE_SET_METHOD(target, "scryptn", scryptn);
-    NODE_SET_METHOD(target, "scryptjane", scryptjane);
-    NODE_SET_METHOD(target, "sha1", sha1);
-    NODE_SET_METHOD(target, "shavite3", shavite3);
-    NODE_SET_METHOD(target, "skein", skein);
-    NODE_SET_METHOD(target, "x11", x11);
-    NODE_SET_METHOD(target, "x13", x13);
-    NODE_SET_METHOD(target, "x15", x15);
-    NODE_SET_METHOD(target, "yescrypt", yescrypt);
+    //NODE_SET_METHOD(target, "nist5", nist5);
+    //NODE_SET_METHOD(target, "quark", quark);
+    //NODE_SET_METHOD(target, "qubit", qubit);
+    //NODE_SET_METHOD(target, "keccak", keccak);
+    //NODE_SET_METHOD(target, "lyra2rev2", lyra2rev2);
+    //NODE_SET_METHOD(target, "lyra2z", lyra2z);
+    //NODE_SET_METHOD(target, "scrypt", scrypt);
+    //NODE_SET_METHOD(target, "scryptn", scryptn);
+    //NODE_SET_METHOD(target, "scryptjane", scryptjane);
+    //NODE_SET_METHOD(target, "sha1", sha1);
+    //NODE_SET_METHOD(target, "shavite3", shavite3);
+    //NODE_SET_METHOD(target, "skein", skein);
+    //NODE_SET_METHOD(target, "x11", x11);
+    //NODE_SET_METHOD(target, "x13", x13);
+    //NODE_SET_METHOD(target, "x15", x15);
+    //NODE_SET_METHOD(target, "yescrypt", yescrypt);
 }
 
 NODE_MODULE(multihashing, init)
