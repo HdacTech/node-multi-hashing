@@ -72,13 +72,13 @@ void argon2d(const v8::FunctionCallbackInfo<v8::Value>& args) {
 
    char * input = Buffer::Data(target);
    uint32_t input_len = Buffer::Length(target);
-   char output[32];
+   char * output = (char*) malloc(sizeof(char) * 32);
    uint32_t output_len = 32;
    uint32_t t_cost = 1; // 1 iteration
    uint32_t m_cost = 4096; // use 4MB
    uint32_t parallelism = 1; // 1 thread, 2 lanes
 
-   argon2id_hash_raw(t_cost, m_cost, parallelism, input, input_len, input, input_len, output, output_len);
+   argon2d_hash_raw(t_cost, m_cost, parallelism, input, input_len, input, input_len, output, output_len);
 
    v8::Local<v8::Value> returnValue = Nan::CopyBuffer(output, 32).ToLocalChecked();
    args.GetReturnValue().Set(returnValue);
