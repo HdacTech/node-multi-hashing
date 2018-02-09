@@ -5,6 +5,7 @@
 #include "nan.h"
 
 extern "C" {
+    /*
     #include "argon2.h"
     #include "bcrypt.h"
     #include "blake.h"
@@ -42,6 +43,7 @@ extern "C" {
     #include "zr5.h"
     #include "yescrypt/yescrypt.h"
     #include "yescrypt/sha256_Y.h"
+    */
 }
 
 #include "boolberry.h"
@@ -52,6 +54,7 @@ extern "C" {
 using namespace node;
 using namespace v8;
 
+/*
 NAN_METHOD(lyra2rev2) {
 
     if (info.Length() < 2)
@@ -617,9 +620,10 @@ NAN_METHOD(yescrypt) {
     info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 
 }
-
+*/
 
 NAN_MODULE_INIT(init) {
+/*
     Nan::Set(target, Nan::New("lyra2z").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(lyra2z)).ToLocalChecked());
     Nan::Set(target, Nan::New("lyra2rev2").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(lyra2rev2)).ToLocalChecked());
     Nan::Set(target, Nan::New("quark").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(quark)).ToLocalChecked());
@@ -646,6 +650,7 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("fresh").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(fresh)).ToLocalChecked());
     Nan::Set(target, Nan::New("neoscrypt").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(neoscrypt_hash)).ToLocalChecked());
     Nan::Set(target, Nan::New("yescrypt").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(yescrypt)).ToLocalChecked());
+*/
 }
 
 NODE_MODULE(multihashing, init)
