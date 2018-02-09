@@ -78,7 +78,7 @@ void argon2d(const v8::FunctionCallbackInfo<v8::Value>& args) {
    uint32_t m_cost = 4096; // use 4MB
    uint32_t parallelism = 1; // 1 thread, 2 lanes
 
-   argon2d_hash_encoded(t_cost, m_cost, parallelism, input, input_len, input, input_len, output, output_len);
+   argon2id_hash_raw(t_cost, m_cost, parallelism, input, input_len, input, input_len, output, output_len);
 
    v8::Local<v8::Value> returnValue = Nan::CopyBuffer(output, 32).ToLocalChecked();
    args.GetReturnValue().Set(returnValue);
