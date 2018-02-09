@@ -5,6 +5,7 @@
 #include "nan.h"
 
 extern "C" {
+    #include "argon2/argon2.h"
     /*
     #include "argon2.h"
     #include "bcrypt.h"
@@ -53,6 +54,35 @@ extern "C" {
 
 using namespace node;
 using namespace v8;
+
+void argon2d(const v8::FunctionCallbackInfo<v8::Value>& args) {
+   v8::Isolate* isolate = args.GetIsolate();
+
+   if (args.Length() < 1) {
+       isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate, "Wrong number of arguments")));
+       return;
+   }
+
+   Local<Object> target = args[0]->ToObject();
+
+   if(!Buffer::HasInstance(target)) {
+       isolate->ThrowException(Exception::TypeError(String::NewFromUtf8(isolate,"Argument should be a buffer object.")));
+       return;
+   }
+
+   char * input = Buffer::Data(target);
+   uint32_t input_len = Buffer::Length(target);
+   char output[32];
+   uint32_t output_len = 32;
+   uint32_t t_cost = 1; // 1 iteration
+   uint32_t m_cost = 4096; // use 4MB
+   uint32_t parallelism = 1; // 1 thread, 2 lanes
+
+   argon2d_hash_raw(t_cost, m_cost, parallelism, input, input_len, input, input_len, output, output_len);
+
+   v8::Local<v8::Value> returnValue = Nan::CopyBuffer(output, 32).ToLocalChecked();
+   args.GetReturnValue().Set(returnValue);
+}
 
 /*
 NAN_METHOD(lyra2rev2) {
@@ -622,8 +652,39 @@ NAN_METHOD(yescrypt) {
 }
 */
 
-NAN_MODULE_INIT(init) {
+void init(v8::Local<v8::Object> target) {
+    NODE_SET_METHOD(target, "argon2d", argon2d);
 /*
+    NODE_SET_METHOD(target, "boolberry", boolberry);
+    NODE_SET_METHOD(target, "cryptonight", cryptonight);
+    NODE_SET_METHOD(target, "fresh", fresh);
+
+    NODE_SET_METHOD(target, "neoscrypt", neoscrypt);
+    NODE_SET_METHOD(target, "nist5", nist5);
+    NODE_SET_METHOD(target, "sha1", sha1);
+    NODE_SET_METHOD(target, "shavite3", shavite3);
+    NODE_SET_METHOD(target, "x13", x13);
+    NODE_SET_METHOD(target, "x15", x15);
+    NODE_SET_METHOD(target, "yescrypt", yescrypt);
+
+
+    NODE_SET_METHOD(target, "hefty1", hefty1);
+    NODE_SET_METHOD(target, "qubit", qubit);
+    NODE_SET_METHOD(target, "fugue", fugue);
+    NODE_SET_METHOD(target, "blake", blake);
+    NODE_SET_METHOD(target, "groestl", groestl);
+    NODE_SET_METHOD(target, "skein", skein);
+    NODE_SET_METHOD(target, "bcrypt", bcrypt);
+    NODE_SET_METHOD(target, "groestlmyriad", groestlmyriad);
+    NODE_SET_METHOD(target, "keccak", keccak);
+    NODE_SET_METHOD(target, "scryptjane", scryptjane);
+    NODE_SET_METHOD(target, "scryptn", scryptn);
+    NODE_SET_METHOD(target, "scrypt", scrypt);
+    NODE_SET_METHOD(target, "x11", x11);
+    NODE_SET_METHOD(target, "quark", quark);
+    NODE_SET_METHOD(target, "lyra2rev2", lyra2rev2);
+    NODE_SET_METHOD(target, "lyra2z", lyra2z);
+
     Nan::Set(target, Nan::New("lyra2z").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(lyra2z)).ToLocalChecked());
     Nan::Set(target, Nan::New("lyra2rev2").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(lyra2rev2)).ToLocalChecked());
     Nan::Set(target, Nan::New("quark").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(quark)).ToLocalChecked());
