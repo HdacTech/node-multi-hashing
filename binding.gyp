@@ -48,6 +48,7 @@
                 "sha3/sph_shabal.c",
                 "sha3/hamsi.c",
 		"sha3/sha2.c",
+		"sha3/sph_sha2big.c",
                 "whirlpoolx.c",
                 "x11.c",
                 "x11ghost.c",
