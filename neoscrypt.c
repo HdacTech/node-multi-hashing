@@ -428,30 +428,86 @@ static void neoscrypt_blkxor(void *dstp, const void *srcp, uint len) {
 
 #endif
 
-/* 32-bit / 64-bit memcpy() */
+/* 32-bit / 64-bit optimised memcpy() */
+/* https://github.com/foxer666/node-open-mining-portal/issues/3 */
 static void neoscrypt_copy(void *dstp, const void *srcp, uint len) {
-    uchar *d = dstp, *s = srcp;
+    #ifdef VECTORIZE
+        memcpy(dstp, srcp, len);
+    #else
+        ulong *dst = (ulong *) dstp;
+        ulong *src = (ulong *) srcp;
+        uint i, tail;
 
-    for(int i = 0; i < len; i++) {
-      d[i] = s[i];
-    }
+        for(i = 0; i < (len / sizeof(ulong)); i++) {
+          dst[i] = src[i];
+        }
+
+        tail = len & (sizeof(ulong) - 1);
+        if(tail) {
+            uchar *dstb = (uchar *) dstp;
+            uchar *srcb = (uchar *) srcp;
+
+            for(i = len - tail; i < len; i++) {
+              dstb[i] = srcb[i];
+            }
+        }
+    #endif
 }
-
-/* 32-bit / 64-bit memory erase aka memset() to zero */
+/* 32-bit / 64-bit optimised memory erase aka memset() to zero */
+/* https://github.com/foxer666/node-open-mining-portal/issues/3 */
 static void neoscrypt_erase(void *dstp, uint len) {
-    const null = 0;
-    uchar *d = dstp;
+    #ifdef VECTORIZE
+        const ulong null = 0;
+        ulong *dst = (ulong *) dstp;
+        uint i, tail;
 
-    for(int i = 0; i < len; i++) {
-      d[i] = null;
-    }
+        for(i = 0; i < (len / sizeof(ulong)); i++) {
+            dst[i] = null;
+        }
+
+        tail = len & (sizeof(ulong) - 1);
+
+        if(tail) {
+            uchar *dstb = (uchar *) dstp;
+
+            for(i = len - tail; i < len; i++) {
+              dstb[i] = (uchar)null;
+            }
+        }
+    #else
+        memset(dstp, 0, len);
+    #endif
+
 }
+/* 32-bit / 64-bit optimised XOR engine */
 /* https://github.com/foxer666/node-open-mining-portal/issues/3 */
 static void neoscrypt_xor(void *dstp, const void *srcp, uint len) {
-    uchar *d = dstp, *s = srcp;
-    for (int i = 0; i < len; i++) {
-        d[i] ^= s[i];
-    }
+    #ifdef VECTORIZE
+        ulong *dst = (ulong *) dstp;
+        ulong *src = (ulong *) srcp;
+        uint i, tail;
+
+        for(i = 0; i < (len / sizeof(ulong)); i++) {
+            dst[i] ^= src[i];
+        }
+
+        tail = len & (sizeof(ulong) - 1);
+
+        if(tail) {
+            uchar *dstb = (uchar *) dstp;
+            uchar *srcb = (uchar *) srcp;
+
+            for(i = len - tail; i < len; i++) {
+                dstb[i] ^= srcb[i];
+            }
+        }
+    #else
+      uchar *d = dstp, *s = srcp;
+
+      for (int i = 0; i < len; i++) {
+          d[i] ^= s[i];
+      }
+    #endif
 }
 
 /* BLAKE2s */
