@@ -432,8 +432,6 @@ static void neoscrypt_blkxor(void *dstp, const void *srcp, uint len) {
 /* https://github.com/foxer666/node-open-mining-portal/issues/3 */
 static void neoscrypt_copy(void *dstp, const void *srcp, uint len) {
     #ifdef VECTORIZE
-        memcpy(dstp, srcp, len);
-    #else
         ulong *dst = (ulong *) dstp;
         ulong *src = (ulong *) srcp;
         uint i, tail;
@@ -451,6 +449,8 @@ static void neoscrypt_copy(void *dstp, const void *srcp, uint len) {
               dstb[i] = srcb[i];
             }
         }
+    #else
+        memcpy(dstp, srcp, len);
     #endif
 }
 /* 32-bit / 64-bit optimised memory erase aka memset() to zero */
