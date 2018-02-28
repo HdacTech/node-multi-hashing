@@ -836,8 +836,6 @@ void neoscrypt(const char *password, char *output, int profile) {
     }
 
     uchar stack[(N + 3) * r * 2 * SCRYPT_BLOCK_SIZE + stack_align];
-    //uchar *stack;
-    //stack = (uchar *)malloc((N + 3) * r * 2 * SCRYPT_BLOCK_SIZE + stack_align);
 
     /* X = r * 2 * SCRYPT_BLOCK_SIZE */
     X = (uint *) &stack[stack_align & ~(stack_align - 1)];
@@ -929,5 +927,4 @@ void neoscrypt(const char *password, char *output, int profile) {
 
     }
 
-    //free(stack);
 }
