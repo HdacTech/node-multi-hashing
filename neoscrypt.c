@@ -428,62 +428,31 @@ static void neoscrypt_blkxor(void *dstp, const void *srcp, uint len) {
 
 #endif
 
-/* 32-bit / 64-bit optimised memcpy() */
+/* 32-bit / 64-bit memcpy() */
 static void neoscrypt_copy(void *dstp, const void *srcp, uint len) {
-    ulong *dst = (ulong *) dstp;
-    ulong *src = (ulong *) srcp;
-    uint i, tail;
+    uchar *d = dstp, *s = srcp;
 
-    for(i = 0; i < (len / sizeof(ulong)); i++)
-      dst[i] = src[i];
-
-    tail = len & (sizeof(ulong) - 1);
-    if(tail) {
-        uchar *dstb = (uchar *) dstp;
-        uchar *srcb = (uchar *) srcp;
-
-        for(i = len - tail; i < len; i++)
-          dstb[i] = srcb[i];
+    for(int i = 0; i < len; i++) {
+      d[i] = s[i];
     }
 }
 
-/* 32-bit / 64-bit optimised memory erase aka memset() to zero */
+/* 32-bit / 64-bit memory erase aka memset() to zero */
 static void neoscrypt_erase(void *dstp, uint len) {
-    const ulong null = 0;
-    ulong *dst = (ulong *) dstp;
-    uint i, tail;
+    const null = 0;
+    uchar *d = dstp;
 
-    for(i = 0; i < (len / sizeof(ulong)); i++)
-      dst[i] = null;
-
-    tail = len & (sizeof(ulong) - 1);
-    if(tail) {
-        uchar *dstb = (uchar *) dstp;
-
-        for(i = len - tail; i < len; i++)
-          dstb[i] = (uchar)null;
+    for(int i = 0; i < len; i++) {
+      d[i] = null;
     }
 }
-
-/* 32-bit / 64-bit optimised XOR engine */
+/* https://github.com/foxer666/node-open-mining-portal/issues/3 */
 static void neoscrypt_xor(void *dstp, const void *srcp, uint len) {
-    ulong *dst = (ulong *) dstp;
-    ulong *src = (ulong *) srcp;
-    uint i, tail;
-
-    for(i = 0; i < (len / sizeof(ulong)); i++)
-      dst[i] ^= src[i];
-
-    tail = len & (sizeof(ulong) - 1);
-    if(tail) {
-        uchar *dstb = (uchar *) dstp;
-        uchar *srcb = (uchar *) srcp;
-
-        for(i = len - tail; i < len; i++)
-          dstb[i] ^= srcb[i];
+    uchar *d = dstp, *s = srcp;
+    for (int i = 0; i < len; i++) {
+        d[i] ^= s[i];
     }
 }
-
 
 /* BLAKE2s */
 
@@ -867,6 +836,9 @@ void neoscrypt(const char *password, char *output, int profile) {
     }
 
     uchar stack[(N + 3) * r * 2 * SCRYPT_BLOCK_SIZE + stack_align];
+    //uchar *stack;
+    //stack = (uchar *)malloc((N + 3) * r * 2 * SCRYPT_BLOCK_SIZE + stack_align);
+
     /* X = r * 2 * SCRYPT_BLOCK_SIZE */
     X = (uint *) &stack[stack_align & ~(stack_align - 1)];
     /* Z is a copy of X for ChaCha */
@@ -878,7 +850,6 @@ void neoscrypt(const char *password, char *output, int profile) {
 
     /* X = KDF(password, salt) */
     kdf = (profile >> 1) & 0xF;
-
     switch(kdf) {
 
         default:
@@ -958,4 +929,5 @@ void neoscrypt(const char *password, char *output, int profile) {
 
     }
 
+    //free(stack);
 }
