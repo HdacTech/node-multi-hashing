@@ -72,7 +72,7 @@
                 "<!(node -e \"require('nan')\")"
             ],
             "cflags_cc": [
-                "-std=c11"
+                "-std=c++11"
             ],
         }
     ]
