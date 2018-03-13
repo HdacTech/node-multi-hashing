@@ -5,7 +5,7 @@
     node-gyp configure
     node-gyp build --debug
 */
-var mh = require('./build/Debug/multihashing.node');
+var mh = require('./build/Release/multihashing.node');
 var crypto = require('crypto');
 
 // this needs more work... I need a something to pass into these hashers and get back and assert..
@@ -32,6 +32,9 @@ console.log(mh.skein(Buffer.from('1234test1234test1234test1234dasd')));
 
 console.log("Testing Groestl");
 console.log(mh.groestl(Buffer.from('1234test1234test1234test1234dasd')));
+
+console.log("Testing Neoscrypt");
+console.log(mh.neoscrypt(Buffer.from('1234test1234test1234test1234dasd')));
 
 // More test to follow when I work on fixing the rest
 //testing a webhook
