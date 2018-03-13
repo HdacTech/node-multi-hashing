@@ -1,4 +1,5 @@
 .vscode/
 .idea/
-build/
 *.iml
+node_modules/
+build/
