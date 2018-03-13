@@ -78,20 +78,22 @@ NAN_METHOD(lyra2z) {
 }
 
 NAN_METHOD(neoscrypt) {
-    if (info.Length() < 1)
-    return THROW_ERROR_EXCEPTION("You must provide one argument.");
+    if (info.Length() > 2) {
+        return THROW_ERROR_EXCEPTION("You must provide two arguments.");
+    }
 
     Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
 
-    if(!Buffer::HasInstance(target))
+    if(!Buffer::HasInstance(target)) {
         return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+    }
 
-     char *input =  ( char*) Buffer::Data(target);
-     char *output = ( char*) malloc(sizeof(char) * 32);
+    unsigned char *input =  (unsigned char*) Buffer::Data(target);
+    unsigned char *output =  (unsigned char*) malloc(sizeof(char) * 32);
 
-    neoscrypt(input, output,0);
+    neoscrypt(input, output, 0);
 
-    info.GetReturnValue().Set(Nan::NewBuffer( (char*)output, 32).ToLocalChecked());
+    info.GetReturnValue().Set(Nan::NewBuffer((char*) output, 32).ToLocalChecked());
 }
 
 NAN_METHOD(bcrypt) {
