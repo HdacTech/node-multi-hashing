@@ -9,3 +9,6 @@
 ## v1.0.2
 
 * Fixed neoscrypt, fixed segmentation fault by disabling vectorizing. Need help to link asm impl in the module.
+
+## v1.0.3
+* https://github.com/foxer666/node-multi-hashing/issues/8
