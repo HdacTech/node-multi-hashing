@@ -769,8 +769,9 @@ void neoscrypt_xor(void *dstp, const void *srcp, uint len) {
         }
     #else
       uchar *d = dstp, *s = srcp;
+      uint i;
 
-      for (int i = 0; i < len; i++) {
+      for (i = 0; i < len; i++) {
           d[i] ^= s[i];
       }
     #endif
